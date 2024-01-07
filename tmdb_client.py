@@ -1,6 +1,19 @@
 import requests
 from config import API_TOKEN
 
+def call_tmdb_api(endpoint):
+    full_url = f"https://api.themoviedb.org/3/{endpoint}"
+    headers = {
+        "Authorization": f"Bearer {API_TOKEN}"
+    }
+    response = requests.get(full_url, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
+def get_movies_list(list_type="popular"):
+    return call_tmdb_api(f"movie/{list_type}")
+
+
 def get_popular_movies():
     endpoint = "https://api.themoviedb.org/3/movie/popular"
     headers = {
@@ -23,28 +36,14 @@ def get_bcakdrop_url(backdrop_path, size = "w780"):
     return f"{base_url}/{size}/{backdrop_path}"
 
 def get_single_movie(movie_id):
-    endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}"
-    headers = {
-        "Authorization": f"Bearer {API_TOKEN}"
-    }
-    response = requests.get(endpoint, headers=headers)
-    return response.json()
+    return call_tmdb_api(f"movie/{movie_id}")
 
 def get_single_movie_cast(movie_id):
-    endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}/credits"
-    headers = {
-        "Authorization": f"Bearer {API_TOKEN}"
-    }
-    response = requests.get(endpoint, headers=headers)
-    return response.json()["cast"]
+    return call_tmdb_api(f"movie/{movie_id}/credits")["cast"]
 
 def get_movie_images(movie_id):
-    endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}/images"
-    headers = {
-        "Authorization": f"Bearer {API_TOKEN}"
-    }
-    response = requests.get(endpoint, headers=headers)
-    return response.json()
+    return call_tmdb_api(f"movie/{movie_id}/images")
+
 
 def get_movies_list(list_type="popular"):
     endpoint = f"https://api.themoviedb.org/3/movie/{list_type}"
